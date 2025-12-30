@@ -3,7 +3,7 @@
 # Required parameters:
 # @raycast.schemaVersion 1
 # @raycast.title pinterest-board-export
-# @raycast.mode compact
+# @raycast.mode fullOutput
 
 # Optional parameters:
 # @raycast.icon 🤖
@@ -41,13 +41,31 @@ elif [[ "$FRONT_APP" == "Safari" ]]; then
   end try')"
 fi
 
-echo ""
-echo "URL: "
-echo "$URL"
+
 
 # determine where to save export
-SAVE_DIR="$(osascript -e 'set f to choose folder with prompt "Save in directory:"'
-    -e 'return POSIX path of f
-    on error number -128
-    return ""
-    end try')"
+SAVE_DIR="$(osascript \
+  -e 'try' \
+  -e 'set f to choose folder with prompt "Choose where to save:"' \
+  -e 'return POSIX path of f' \
+  -e 'on error number -128' \
+  -e 'return ""' \
+  -e 'end try')"
+
+if [[ -z "$SAVE_DIR" ]]; then
+    echo "Cancelled."
+    exit 0
+fi
+
+# create output folder (TS is a timestamp you can tack onto the filename if you want)
+TS=$(date +%Y-%m-%d_%H%M%S)
+OUTDIR="${SAVE_DIR%/}/Moodboard_$TS"
+mkdir -p "$OUTDIR"
+
+
+echo "URL: "
+echo "$URL"
+echo ""
+echo "Saving to: "
+echo "$OUTDIR"
+open "$OUTDIR"
