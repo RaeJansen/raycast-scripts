@@ -63,9 +63,18 @@ OUTDIR="${SAVE_DIR%/}/Moodboard_$TS"
 mkdir -p "$OUTDIR"
 
 
-echo "URL: "
-echo "$URL"
-echo ""
-echo "Saving to: "
-echo "$OUTDIR"
-open "$OUTDIR"
+echo "URL: <$URL>"
+echo "OUTDIR: <$OUTDIR>"
+
+HTML_PATH="$OUTDIR/page.html"
+curl -L -A "Mozilla/5.0" "$URL" -o "$HTML_PATH"
+
+if [[ ! -s "$HTML_PATH" ]]; then
+    echo "Downloaded HTML empty/missing."
+    exit 1
+fi
+
+echo "Saved HTML to: <$HTML_PATH>"
+open "$HTML_PATH"
+
+
