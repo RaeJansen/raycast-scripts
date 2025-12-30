@@ -39,10 +39,15 @@ elif [[ "$FRONT_APP" == "Safari" ]]; then
   on error
     return ""
   end try')"
-
 fi
 
 echo ""
 echo "URL: "
 echo "$URL"
-    
+
+# determine where to save export
+SAVE_DIR="$(osascript -e 'set f to choose folder with prompt "Save in directory:"'
+    -e 'return POSIX path of f
+    on error number -128
+    return ""
+    end try')"
